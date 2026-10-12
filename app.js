@@ -79,9 +79,10 @@ async function changePassword(data){
  const {error:verifyError}=await client.auth.getUser();if(verifyError)throw Error('重設連結失效，請重新寄信');
  const {error}=await client.auth.updateUser({password:data.password});if(error)throw Error(error.message);
  await client.auth.signOut({scope:'local'});recovering=false;session=null;state=null;
- history.replaceState(null,'',location.pathname);render();toast('密碼已更新，請用新密碼登入。');
+ window.history.replaceState(null,'',location.pathname);render();toast('密碼已更新，請用新密碼登入。');
 }
 init();
+
 
 
 
