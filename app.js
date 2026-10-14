@@ -108,8 +108,9 @@ async function checkRateConnection(){
  if(!session)throw Error('請先登入會員');
  const {data,error}=await client.functions.invoke('bank-rate-sync',{method:'GET'});
  if(error)throw Error('會員連線未成功，預設登入驗證保持啟用；原利率未變更');
- if(!data?.rates?.source_date)throw Error('官方回應不完整；原利率未變更');
- modal('官方連線成功',`<div class="feedback">已使用目前會員登入驗證取得臺灣銀行 ${esc(data.rates.source_date)} 牌告。</div><p>活期儲蓄年息 ${(data.rates.demand_rate*100).toFixed(3)}%</p><p>${data.rates.terms.map(t=>`${t.months} 個月定存 ${(t.rate*100).toFixed(3)}%`).join(' · ')}</p><p class="small">這次只檢查連線，沒有開啟同步或修改家庭利率。</p>`);
+ const rates=data?.rates||data;
+ if(!rates?.source_date)throw Error('官方回應不完整；原利率未變更');
+ modal('官方連線成功',`<div class="feedback">已使用目前會員登入驗證取得臺灣銀行 ${esc(rates.source_date)} 牌告。</div><p>活期儲蓄年息 ${(rates.demand_rate*100).toFixed(3)}%</p><p>${rates.terms.map(t=>`${t.months} 個月定存 ${(t.rate*100).toFixed(3)}%`).join(' · ')}</p><p class="small">這次只檢查連線，沒有開啟同步或修改家庭利率。</p>`);
 }
 async function syncLiveRates(){
  if(demo)throw Error('展示版不連線或修改真實牌告；請在正式家長帳戶操作');
